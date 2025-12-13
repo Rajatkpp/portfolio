@@ -1,0 +1,38 @@
+[
+  {
+    "name": "5G.png",
+    "filename": "5G.png",
+    "url": "certificates/5G.png",
+    "type": "image"
+  },
+  {
+    "name": "AI_page-0001.jpg",
+    "filename": "AI_page-0001.jpg",
+    "url": "certificates/AI_page-0001.jpg",
+    "type": "image"
+  },
+  {
+    "name": "Architect.png",
+    "filename": "Architect.png",
+    "url": "certificates/Architect.png",
+    "type": "image"
+  },
+  {
+    "name": "Devops.png",
+    "filename": "Devops.png",
+    "url": "certificates/Devops.png",
+    "type": "image"
+  },
+  {
+    "name": "Foundation.png",
+    "filename": "Foundation.png",
+    "url": "certificates/Foundation.png",
+    "type": "image"
+  },
+  {
+    "name": "GENAI_page-0001.jpg",
+    "filename": "GENAI_page-0001.jpg",
+    "url": "certificates/GENAI_page-0001.jpg",
+    "type": "image"
+  }
+]

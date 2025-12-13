@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rajat Tiwari | Enterprise Cloud & DevOps Portfolio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Custom Tailwind Configuration */
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'enterprise-dark': '#0F172A', /* Slate-900 */
+                        'enterprise-blue': '#3B82F6', /* Blue-500 */
+                        'enterprise-light': '#E0F2F1', /* Teal-50 */
+                        'accent-teal': '#2DD4BF', /* Teal-400 */
+                        'muted-gray': '#94A3B8', /* Slate-400 */
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+
+        /* Basic global styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0F172A; /* enterprise-dark */
+            color: white;
+            scroll-behavior: smooth;
+        }
+
+        /* Gradient hover effect for tech badges (Section 1) */
+        .tech-badge-card {
+            filter: grayscale(100%);
+            transition: all 0.3s ease;
+            box-shadow: 0 0 0px rgba(45, 212, 191, 0.0);
+        }
+
+        .tech-badge-card:hover {
+            filter: grayscale(0%);
+            box-shadow: 0 0 20px rgba(45, 212, 191, 0.5);
+            transform: translateY(-5px);
+        }
+
+        /* Custom scrollbar for better aesthetic */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3B82F6;
+            border-radius: 4px;
+        }
+
+        /* Certificates carousel styles */
+        .cert-carousel {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cert-track {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            will-change: transform;
+        }
+
+        .cert-card {
+            flex: 0 0 auto;
+            width: 280px;
+            height: 180px;
+            background: rgba(17,24,39,0.8);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+            transition: transform 300ms ease, box-shadow 300ms ease;
+        }
+
+        .cert-card:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 14px 30px rgba(45,212,191,0.12);} 
+
+        .cert-card img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+        /* Hide file names */
+        .cert-title { display: none !important; }
+
+        /* Contact modal styles */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(2,6,23,0.6);
+            backdrop-filter: blur(6px) saturate(120%);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 60;
+            padding: 1.25rem;
+        }
+
+        .modal-backdrop.open { display: flex; }
+
+        .contact-modal {
+            width: 100%;
+            max-width: 520px;
+            border-radius: 12px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+            box-shadow: 0 10px 40px rgba(2,6,23,0.7);
+            padding: 1.25rem 1.5rem;
+            color: var(--tw-text-opacity, 1);
+            transform-origin: center center;
+            outline: none;
+            transition: transform 220ms cubic-bezier(.2,.9,.2,1), opacity 220ms ease;
+        }
+
+        .modal-enter { opacity: 0; transform: scale(.96); }
+        .modal-enter.open { opacity: 1; transform: scale(1); }
+
+        .contact-modal .close-btn {
+            position: absolute;
+            right: 12px;
+            top: 12px;
+            background: transparent;
+            border: none;
+            color: #cbd5e1;
+            padding: 6px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .contact-level {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 10px;
+            transition: transform 160ms ease, background-color 160ms ease;
+        }
+
+        .contact-level:hover { transform: translateY(-4px); }
+
+        .contact-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.03);
+            flex: 0 0 48px;
+        }
+
+        .contact-content { flex: 1 1 auto; }
+
+        .contact-label { font-size: 1rem; font-weight: 600; }
+
+        @media (max-width: 640px) {
+            .contact-modal { padding: 1rem; border-radius: 10px; }
+            .contact-icon { width: 44px; height: 44px; }
+        }
+
+        /* Responsive adjustments */
+        .cert-card {
+            width: clamp(160px, 45vw, 280px);
+            height: clamp(120px, 28vw, 180px);
+        }
+
+        @media (max-width: 420px) {
+            .logo-3d { width: 40px; height: 40px; }
+            .logo-wrap { gap: 0.5rem; }
+            .logo-wrap span { font-size: 1rem; }
+        }
+
+        /* Header 3D circular logo */
+        .logo-wrap {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-3d {
+            width: 48px;
+            height: 48px;
+            border-radius: 9999px;
+            display: inline-block;
+            overflow: hidden;
+            position: relative;
+            background: linear-gradient(145deg, rgba(45,212,191,0.06), rgba(59,130,246,0.04));
+            box-shadow: 0 8px 20px rgba(2,6,23,0.6), inset 0 2px 6px rgba(255,255,255,0.02);
+            transform: perspective(600px) rotateX(6deg);
+            transition: transform 220ms cubic-bezier(.2,.9,.2,1), box-shadow 220ms ease;
+            border: 1px solid rgba(255,255,255,0.04);
+        }
+
+        .logo-3d img { width: 100%; height: 100%; object-fit: cover; display:block; }
+
+        .logo-3d::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            box-shadow: inset 0 10px 30px rgba(0,0,0,0.25), inset 0 -10px 20px rgba(255,255,255,0.02);
+            pointer-events: none;
+        }
+
+        .logo-3d:hover {
+            transform: perspective(700px) rotateX(0deg) translateY(-3px) scale(1.03);
+            box-shadow: 0 18px 36px rgba(2,6,23,0.7), inset 0 2px 8px rgba(255,255,255,0.03);
+        }
+
+        @media (min-width: 1024px) {
+            .logo-3d { width: 56px; height: 56px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-50 bg-enterprise-dark/95 backdrop-blur-sm shadow-lg border-b border-enterprise-blue/20">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-12 sm:h-16">
+            <a href="#" class="logo-wrap text-2xl font-bold text-accent-teal hover:text-white transition duration-300">
+                <span class="logo-3d" aria-hidden="true">
+                    <img src="Profile.jpg" alt="Rajat Tiwari" />
+                </span>
+                <span class="inline-block">Rajat Tiwari</span>
+            </a>
+            <nav class="hidden md:flex space-x-6 text-sm font-medium">
+                    <a href="#projects" class="text-white hover:text-accent-teal transition duration-200">Projects</a>
+                    <a href="#specialization" class="text-white hover:text-accent-teal transition duration-200">Expertise</a>
+                    <a href="#experience" class="text-white hover:text-accent-teal transition duration-200">Experience</a>
+                    <a href="#certificates-gallery" class="text-white hover:text-accent-teal transition duration-200">Certificates</a>
+                    <a href="#contact" class="text-white hover:text-accent-teal transition duration-200">Contact</a>
+            </nav>
+            <a href="javascript:void(0)" class="open-contact-modal inline-flex items-center px-3 py-2 border border-enterprise-blue text-sm font-medium rounded-lg text-enterprise-blue hover:bg-enterprise-blue hover:text-white transition duration-300">
+                <i data-lucide="mail" class="w-4 h-4 mr-2"></i> Contact Me
+            </a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- 1. HOMEPAGE HERO SECTION -->
+        <section id="hero" class="py-12 md:py-20 lg:py-24 text-center lg:text-left">
+            <div class="flex flex-col lg:flex-row items-center lg:justify-between space-y-12 lg:space-y-0">
+                
+                <!-- Text Content -->
+                <div class="lg:w-1/2">
+                    <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold leading-tight text-white mb-4">
+                        Enterprise-Grade <span class="text-accent-teal">Cloud & DevOps</span> Engineering
+                    </h1>
+                    <h2 class="text-xl md:text-2xl font-light text-muted-gray mb-8">
+                        Automating cloud infrastructure, scaling Kubernetes workloads, and delivering zero-downtime CI/CD pipelines for production systems.
+                    </h2>
+
+                    <!-- Trust Signals (Badges) -->
+                    <div class="flex flex-wrap justify-center lg:justify-start gap-3 mb-10">
+                        <span class="bg-blue-900/50 text-blue-300 text-xs font-medium px-3 py-1.5 rounded-full border border-blue-700">Kubernetes Certified Workflows</span>
+                        <span class="bg-teal-900/50 text-teal-300 text-xs font-medium px-3 py-1.5 rounded-full border border-teal-700">CI/CD Automation Specialist</span>
+                        <span class="bg-sky-900/50 text-sky-300 text-xs font-medium px-3 py-1.5 rounded-full border border-sky-700">Cloud Infrastructure (OCI + AWS)</span>
+                        <span class="bg-indigo-900/50 text-indigo-300 text-xs font-medium px-3 py-1.5 rounded-full border border-indigo-700">Production Support Experience</span>
+                    </div>
+
+                    <!-- Primary CTAs -->
+                    <div class="flex justify-center lg:justify-start space-x-4">
+                        <a href="#projects" class="bg-enterprise-blue hover:bg-blue-600 text-white font-semibold py-3 px-8 rounded-lg shadow-xl shadow-enterprise-blue/30 transition duration-300">
+                            View Projects
+                        </a>
+                        <a href="Resume.pdf" download class="border-2 border-muted-gray text-muted-gray hover:bg-muted-gray hover:text-enterprise-dark font-semibold py-3 px-8 rounded-lg transition duration-300">
+                            Download Resume
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Visual System Panel (Metrics) -->
+                <div class="lg:w-5/12 w-full p-6 bg-enterprise-dark/50 rounded-xl border border-enterprise-blue/30 shadow-2xl shadow-enterprise-blue/10">
+                    <h3 class="text-lg font-semibold text-accent-teal mb-4 flex items-center justify-center lg:justify-start">
+                        <i data-lucide="activity" class="w-5 h-5 mr-2"></i> Operational Metrics
+                    </h3>
+                    <div class="grid grid-cols-2 gap-4 metrics-panel">
+                        <div class="p-4 bg-gray-800/50 rounded-lg text-center border border-gray-700/50">
+                            <div class="text-3xl font-bold text-green-400" data-target="99.98">0</div>
+                            <div class="text-sm text-muted-gray">Uptime (%)</div>
+                        </div>
+                        <div class="p-4 bg-gray-800/50 rounded-lg text-center border border-gray-700/50">
+                            <div class="text-3xl font-bold text-yellow-400" data-target="1200">0</div>
+                            <div class="text-sm text-muted-gray">Deployments (Total)</div>
+                        </div>
+                        <div class="p-4 bg-gray-800/50 rounded-lg text-center border border-gray-700/50">
+                            <div class="text-3xl font-bold text-blue-400" data-target="45">0</div>
+                            <div class="text-sm text-muted-gray">Pipelines Engineered</div>
+                        </div>
+                        <div class="p-4 bg-gray-800/50 rounded-lg text-center border border-gray-700/50">
+                            <div class="text-3xl font-bold text-red-400" data-target="300">0</div>
+                            <div class="text-sm text-muted-gray">Incidents Resolved</div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 p-4 bg-gray-900 rounded-lg text-center border border-gray-700">
+                        <p class="text-sm text-muted-gray">Architecture Showcase</p>
+                        <p class="text-sm font-semibold text-white mt-1">
+                            OCI, Kubernetes, Jenkins, & Terraform orchestration.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <p class="mt-16 text-xl text-center font-medium text-white/70">
+                &mdash; "Turning Infrastructure into <span class="text-accent-teal">High-Performance Platforms</span>."
+            </p>
+        </section>
+
+
+        <!-- 2. ENTERPRISE SECTION STRUCTURE -->
+
+        <!-- Section 1 — Trusted By Production Systems -->
+        <section id="trusted" class="py-16 border-t border-b border-white/10">
+            <h2 class="text-center text-3xl font-bold text-white mb-12">Trusted By Production Systems</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-6 max-w-6xl mx-auto">
+                <!-- Tech Badge Item -->
+                <div class="tech-badge-card flex flex-col items-center p-4 bg-gray-800 rounded-xl shadow-lg hover:shadow-accent-teal/30">
+                    <i data-lucide="box" class="w-8 h-8 text-enterprise-blue mb-2"></i>
+                    <p class="text-xs font-semibold text-white text-center">Kubernetes</p>
+                </div>
+                <div class="tech-badge-card flex flex-col items-center p-4 bg-gray-800 rounded-xl shadow-lg hover:shadow-accent-teal/30">
+                    <i data-lucide="git-branch" class="w-8 h-8 text-orange-500 mb-2"></i>
+                    <p class="text-xs font-semibold text-white text-center">Jenkins</p>
+                </div>
+                <div class="tech-badge-card flex flex-col items-center p-4 bg-gray-800 rounded-xl shadow-lg hover:shadow-accent-teal/30">
+                    <i data-lucide="gitlab" class="w-8 h-8 text-orange-600 mb-2"></i>
+                    <p class="text-xs font-semibold text-white text-center">GitLab CI</p>
+                </div>
+                <div class="tech-badge-card flex flex-col items-center p-4 bg-gray-800 rounded-xl shadow-lg hover:shadow-accent-teal/30">
+                    <i data-lucide="package" class="w-8 h-8 text-sky-400 mb-2"></i>
+                    <p class="text-xs font-semibold text-white text-center">Docker</p>
+                </div>
+                <div class="tech-badge-card flex flex-col items-center p-4 bg-gray-800 rounded-xl shadow-lg hover:shadow-accent-teal/30">
+                    <i data-lucide="cloud-lightning" class="w-8 h-8 text-blue-600 mb-2"></i>
+                    <p class="text-xs font-semibold text-white text-center">OCI</p>
+                </div>
+                <div class="tech-badge-card flex flex-col items-center p-4 bg-gray-800 rounded-xl shadow-lg hover:shadow-accent-teal/30">
+                    <i data-lucide="cloud" class="w-8 h-8 text-orange-400 mb-2"></i>
+                    <p class="text-xs font-semibold text-white text-center">AWS</p>
+                </div>
+                <div class="tech-badge-card flex flex-col items-center p-4 bg-gray-800 rounded-xl shadow-lg hover:shadow-accent-teal/30">
+                    <i data-lucide="code" class="w-8 h-8 text-yellow-500 mb-2"></i>
+                    <p class="text-xs font-semibold text-white text-center">Python/Django</p>
+                </div>
+                <div class="tech-badge-card flex flex-col items-center p-4 bg-gray-800 rounded-xl shadow-lg hover:shadow-accent-teal/30">
+                    <i data-lucide="gauge" class="w-8 h-8 text-pink-500 mb-2"></i>
+                    <p class="text-xs font-semibold text-white text-center">Prometheus/Grafana</p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Section 2 — What I Specialize In -->
+        <section id="specialization" class="py-20">
+            <h2 class="text-center text-4xl font-extrabold text-white mb-16">What I Specialize In</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <!-- Specialization Card -->
+                <div class="p-6 bg-gray-800 rounded-xl border border-accent-teal/20 shadow-xl hover:shadow-accent-teal/30 transition duration-300">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <i data-lucide="lock" class="w-6 h-6 text-enterprise-blue"></i>
+                        <h3 class="text-xl font-bold text-white">Cloud Infrastructure</h3>
+                    </div>
+                    <p class="text-muted-gray mb-3">Engineering secure, compliant networking on <span class="font-semibold text-white">OCI and AWS</span>, utilizing <span class="font-semibold text-white">Terraform</span> for robust and repeatable provisioning.</p>
+                    <span class="text-xs font-semibold px-2 py-1 rounded-full bg-blue-900/50 text-blue-300">Secure, Compliance-ready</span>
+                </div>
+
+                <div class="p-6 bg-gray-800 rounded-xl border border-accent-teal/20 shadow-xl hover:shadow-accent-teal/30 transition duration-300">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <i data-lucide="server-cog" class="w-6 h-6 text-accent-teal"></i>
+                        <h3 class="text-xl font-bold text-white">Kubernetes Operations</h3>
+                    </div>
+                    <p class="text-muted-gray mb-3">Designing and managing highly scalable, <span class="font-semibold text-white">fault-tolerant Kubernetes clusters</span>, focusing on secure, helm-based deployments.</p>
+                    <span class="text-xs font-semibold px-2 py-1 rounded-full bg-teal-900/50 text-teal-300">Scalable, High Availability</span>
+                </div>
+
+                <div class="p-6 bg-gray-800 rounded-xl border border-accent-teal/20 shadow-xl hover:shadow-accent-teal/30 transition duration-300">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <i data-lucide="pipeline" class="w-6 h-6 text-orange-500"></i>
+                        <h3 class="text-xl font-bold text-white">CI/CD Automation</h3>
+                    </div>
+                    <p class="text-muted-gray mb-3">Developing end-to-end automated pipelines with Jenkins and GitLab that achieve a <span class="font-semibold text-accent-teal">40% reduction in deployment time</span> and enable zero-downtime microservice rollouts.</p>
+                    <span class="text-xs font-semibold px-2 py-1 rounded-full bg-orange-900/50 text-orange-300">Automated Pipelines, Fault-tolerant</span>
+                </div>
+
+                <div class="p-6 bg-gray-800 rounded-xl border border-accent-teal/20 shadow-xl hover:shadow-accent-teal/30 transition duration-300">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <i data-lucide="bar-chart-3" class="w-6 h-6 text-purple-400"></i>
+                        <h3 class="text-xl font-bold text-white">Observability</h3>
+                    </div>
+                    <p class="text-muted-gray mb-3">Implementing full-stack logging and monitoring with <span class="font-semibold text-white">Prometheus, Grafana, and EFK</span> to enhance issue traceability and performance insights.</p>
+                    <span class="text-xs font-semibold px-2 py-1 rounded-full bg-purple-900/50 text-purple-300">Production, High Availability</span>
+                </div>
+
+                <div class="p-6 bg-gray-800 rounded-xl border border-accent-teal/20 shadow-xl hover:shadow-accent-teal/30 transition duration-300">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <i data-lucide="shield-check" class="w-6 h-6 text-red-500"></i>
+                        <h3 class="text-xl font-bold text-white">Production Support</h3>
+                    </div>
+                    <p class="text-muted-gray mb-3">Integrating security best practices and vulnerability assessments to deliver robust solutions and significantly reduce <span class="font-semibold text-white">mean time to resolution</span> for incidents.</p>
+                    <span class="text-xs font-semibold px-2 py-1 rounded-full bg-red-900/50 text-red-300">Secure, Production</span>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Section 3 — Featured Enterprise Projects -->
+        <section id="projects" class="py-20">
+            <h2 class="text-center text-4xl font-extrabold text-white mb-16">Featured Enterprise Projects</h2>
+            <div class="grid lg:grid-cols-2 gap-12">
+                
+                <!-- Project 1: Automated Kubernetes Deployment Platform -->
+                <div class="bg-gray-800 rounded-xl overflow-hidden shadow-2xl border border-enterprise-blue/30">
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold text-accent-teal mb-3">Automated Kubernetes Deployment Platform</h3>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="text-xs font-medium px-2 py-1 rounded-full bg-orange-500/30 text-orange-300">Jenkins</span>
+                            <span class="text-xs font-medium px-2 py-1 rounded-full bg-blue-500/30 text-blue-300">Helm</span>
+                            <span class="text-xs font-medium px-2 py-1 rounded-full bg-sky-500/30 text-sky-300">Docker</span>
+                            <span class="text-xs font-medium px-2 py-1 rounded-full bg-indigo-500/30 text-indigo-300">OCI (OKE)</span>
+                        </div>
+
+                        <p class="text-white font-semibold mb-3">Business Impact:</p>
+                        <p class="text-muted-gray mb-4">Developed a comprehensive CI/CD pipeline that <span class="font-bold text-green-400">reduced deployment time by 40%</span> for critical enterprise applications.</p>
+
+                        <p class="text-white font-semibold mb-3">Scale Metrics:</p>
+                        <ul class="list-disc list-inside space-y-1 text-muted-gray ml-4 text-sm">
+                            <li>Enabled deployment of critical systems like <span class="text-white">Oracle BRM and Siebel CRM</span>.</li>
+                            <li>Integrated Fluent Bit via <span class="text-white">DaemonSet</span> for full-stack observability across all nodes.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-900 p-4 border-t border-enterprise-blue/20">
+                        <p class="text-sm text-center text-muted-gray">Diagram Placeholder: Jenkins orchestrating a Helm deployment to OCI/OKE.</p>
+                    </div>
+                </div>
+
+                <!-- Project 2: Secure Django-Based Internal Workflow System -->
+                <div class="bg-gray-800 rounded-xl overflow-hidden shadow-2xl border border-accent-teal/30">
+                    <div class="p-6">
+                        <h3 class="text-2xl font-bold text-accent-teal mb-3">Secure Django-Based Internal Workflow System</h3>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="text-xs font-medium px-2 py-1 rounded-full bg-yellow-500/30 text-yellow-300">Python/Django</span>
+                            <span class="text-xs font-medium px-2 py-1 rounded-full bg-red-500/30 text-red-300">Oracle SQL</span>
+                            <span class="text-xs font-medium px-2 py-1 rounded-full bg-pink-500/30 text-pink-300">RESTful APIs</span>
+                            <span class="text-xs font-medium px-2 py-1 rounded-full bg-gray-500/30 text-gray-300">Enterprise Security</span>
+                        </div>
+
+                        <p class="text-white font-semibold mb-3">Business Impact:</p>
+                        <p class="text-muted-gray mb-4">Developed a secure, modular platform to streamline internal operations and workflow management, implementing <span class="font-bold text-green-400">enterprise-grade security measures</span>.</p>
+
+                        <p class="text-white font-semibold mb-3">Scale Metrics:</p>
+                        <ul class="list-disc list-inside space-y-1 text-muted-gray ml-4 text-sm">
+                            <li>Engineered <span class="text-white">scalable RESTful APIs</span> handling high concurrent load.</li>
+                            <li>Ensured compliance with <span class="text-white">Oracle's internal infosec standards</span> through comprehensive security hardening.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-900 p-4 border-t border-accent-teal/20">
+                        <p class="text-sm text-center text-muted-gray">Diagram Placeholder: Django backend with REST APIs connecting to Oracle SQL.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- Section 4 — Operational Impact (Metrics Section - Repeats Hero Stats for emphasis) -->
+        <section id="metrics" class="py-20 bg-gray-900 rounded-xl my-16">
+            <h2 class="text-center text-4xl font-extrabold text-white mb-12">Operational Impact at Scale</h2>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-8 max-w-7xl mx-auto text-center">
+                
+                <div class="p-4">
+                    <p class="text-4xl lg:text-5xl font-extrabold text-accent-teal mb-1">40%</p>
+                    <p class="text-sm font-semibold text-white uppercase tracking-wider">Faster Deployments</p>
+                </div>
+                
+                <div class="p-4">
+                    <p class="text-4xl lg:text-5xl font-extrabold text-green-400 mb-1">99.98%</p>
+                    <p class="text-sm font-semibold text-white uppercase tracking-wider">Uptime Managed</p>
+                </div>
+
+                <div class="p-4">
+                    <p class="text-4xl lg:text-5xl font-extrabold text-yellow-400 mb-1">1200+</p>
+                    <p class="text-sm font-semibold text-white uppercase tracking-wider">CI/CD Executions</p>
+                </div>
+
+                <div class="p-4">
+                    <p class="text-4xl lg:text-5xl font-extrabold text-red-400 mb-1">300+</p>
+                    <p class="text-sm font-semibold text-white uppercase tracking-wider">Incidents Resolved</p>
+                </div>
+
+                <div class="p-4">
+                    <p class="text-4xl lg:text-5xl font-extrabold text-blue-400 mb-1">25+</p>
+                    <p class="text-sm font-semibold text-white uppercase tracking-wider">Microservices Managed</p>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- Section 5 — Experience Timeline -->
+        <section id="experience" class="py-20">
+            <h2 class="text-center text-4xl font-extrabold text-white mb-16">Professional Experience</h2>
+            
+            <div class="max-w-4xl mx-auto relative">
+                <!-- Timeline Line -->
+                <div class="absolute left-1/2 transform -translate-x-1/2 w-1 bg-enterprise-blue/30 h-full hidden sm:block"></div>
+
+                <!-- Timeline Item 1 -->
+                <div class="flex flex-col sm:flex-row items-start sm:items-center w-full my-8">
+                    <!-- Date/Company Side -->
+                    <div class="sm:w-1/2 sm:pr-8 sm:text-right mb-2 sm:mb-0">
+                        <p class="text-lg font-bold text-accent-teal">Oracle</p>
+                        <p class="text-sm text-muted-gray">Staff Consultant</p>
+                        <p class="text-xs text-muted-gray">(07/2022 – Present)</p>
+                    </div>
+                    <!-- Dot/Separator -->
+                    <div class="hidden sm:block w-4 h-4 rounded-full bg-enterprise-blue border-4 border-enterprise-dark absolute left-1/2 transform -translate-x-1/2 z-10"></div>
+                    <!-- Impact/Responsibility Side -->
+                    <div class="sm:w-1/2 sm:pl-8 p-4 bg-gray-800 rounded-lg shadow-xl border border-enterprise-blue/20">
+                        <p class="text-sm font-semibold text-white mb-2">Key Responsibilities & Impact (Enterprise Tone):</p>
+                        <ul class="list-disc list-inside space-y-1 text-muted-gray text-sm ml-4">
+                            <li><span class="font-bold text-white">Ownership:</span> Spearheaded the development and deployment of cloud-native applications on OCI.</li>
+                            <li><span class="font-bold text-white">Scale:</span> Led the refactoring of monolithic applications into microservices.</li>
+                            <li><span class="font-bold text-white">Responsibility:</span> Managed Kubernetes clusters for high availability and scalability.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Add more items here if necessary -->
+
+            </div>
+        </section>
+
+
+        <!-- Section 6 — Architecture Showcase -->
+        <section id="architecture" class="py-20">
+            <h2 class="text-center text-4xl font-extrabold text-white mb-16">Architectural Transformations</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+
+                <!-- Card 1: Monolith -> Microservices -->
+                <div class="p-6 bg-gray-800 rounded-xl border border-gray-700 shadow-lg">
+                    <div class="text-2xl font-bold text-red-500 mb-2">Monolith <i data-lucide="arrow-right" class="inline-block w-5 h-5 mx-1"></i> <span class="text-green-500">Microservices</span></div>
+                    <p class="text-muted-gray mb-4">Led the project to refactor legacy monolithic applications into modular, <span class="font-semibold text-white">fault-tolerant microservices</span>.</p>
+                    <span class="text-xs font-semibold px-2 py-1 rounded-full bg-green-900/50 text-green-300">Fault-tolerant</span>
+                </div>
+
+                <!-- Card 2: Manual -> Automated -->
+                <div class="p-6 bg-gray-800 rounded-xl border border-gray-700 shadow-lg">
+                    <div class="text-2xl font-bold text-red-500 mb-2">Manual <i data-lucide="arrow-right" class="inline-block w-5 h-5 mx-1"></i> <span class="text-green-500">Automated</span></div>
+                    <p class="text-muted-gray mb-4">Developed an <span class="font-semibold text-white">automated CI/CD workflow</span> for build, test, scan, and Helm-based Kubernetes deployment.</p>
+                    <span class="text-xs font-semibold px-2 py-1 rounded-full bg-blue-900/50 text-blue-300">Automated Pipelines</span>
+                </div>
+
+                <!-- Card 3: Reactive -> Proactive -->
+                <div class="p-6 bg-gray-800 rounded-xl border border-gray-700 shadow-lg">
+                    <div class="text-2xl font-bold text-red-500 mb-2">Reactive <i data-lucide="arrow-right" class="inline-block w-5 h-5 mx-1"></i> <span class="text-green-500">Proactive</span></div>
+                    <p class="text-muted-gray mb-4">Enabled <span class="font-semibold text-white">comprehensive observability</span> with Fluent Bit, enhancing full-stack logging and monitoring for better issue traceability.</p>
+                    <span class="text-xs font-semibold px-2 py-1 rounded-full bg-purple-900/50 text-purple-300">Production, Scalable</span>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- Section 7 — Certificates Gallery -->
+        <section id="certificates-gallery" class="py-20">
+            <h2 class="text-center text-4xl font-extrabold text-white mb-12">Certificates & Achievements</h2>
+            <div class="max-w-6xl mx-auto px-4">
+                <div id="certificates-gallery-grid" class="cert-carousel w-full">
+                    <div class="cert-track">Loading certificates...</div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Section 8 — Certifications & Tools (Grid Layout) -->
+        <section id="certifications" class="py-20">
+            <h2 class="text-center text-4xl font-extrabold text-white mb-16">Key Certifications & Toolset</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+
+                <!-- Tool Badge -->
+                <div class="flex items-center p-4 bg-gray-800 rounded-lg shadow-md border border-enterprise-blue/20">
+                    <i data-lucide="award" class="w-6 h-6 text-yellow-400 mr-3"></i>
+                    <div>
+                        <p class="font-semibold text-white">OCI Certified</p>
+                        <p class="text-xs text-muted-gray">10x Certified, Architect Associate, DevOps OCA</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center p-4 bg-gray-800 rounded-lg shadow-md border border-enterprise-blue/20">
+                    <i data-lucide="box" class="w-6 h-6 text-enterprise-blue mr-3"></i>
+                    <div>
+                        <p class="font-semibold text-white">Kubernetes</p>
+                        <p class="text-xs text-muted-gray">OKE, Docker, Helm</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center p-4 bg-gray-800 rounded-lg shadow-md border border-enterprise-blue/20">
+                    <i data-lucide="git-branch" class="w-6 h-6 text-orange-500 mr-3"></i>
+                    <div>
+                        <p class="font-semibold text-white">Jenkins & GitLab</p>
+                        <p class="text-xs text-muted-gray">CI/CD Automation</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center p-4 bg-gray-800 rounded-lg shadow-md border border-enterprise-blue/20">
+                    <i data-lucide="anchor" class="w-6 h-6 text-purple-400 mr-3"></i>
+                    <div>
+                        <p class="font-semibold text-white">Terraform</p>
+                        <p class="text-xs text-muted-gray">Infrastructure as Code</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center p-4 bg-gray-800 rounded-lg shadow-md border border-enterprise-blue/20">
+                    <i data-lucide="cloud" class="w-6 h-6 text-orange-400 mr-3"></i>
+                    <div>
+                        <p class="font-semibold text-white">AWS</p>
+                        <p class="text-xs text-muted-gray">Cloud Platform Experience</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center p-4 bg-gray-800 rounded-lg shadow-md border border-enterprise-blue/20">
+                    <i data-lucide="code" class="w-6 h-6 text-yellow-500 mr-3"></i>
+                    <div>
+                        <p class="font-semibold text-white">Python/Django</p>
+                        <p class="text-xs text-muted-gray">Backend/Automation</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center p-4 bg-gray-800 rounded-lg shadow-md border border-enterprise-blue/20">
+                    <i data-lucide="gauge" class="w-6 h-6 text-pink-500 mr-3"></i>
+                    <div>
+                        <p class="font-semibold text-white">Observability</p>
+                        <p class="text-xs text-muted-gray">Grafana/Prometheus/EFK</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 9 — Final CTA (Enterprise Tone) -->
+        <section id="contact" class="py-20 my-16 text-center bg-gray-900 rounded-xl border-4 border-accent-teal/50 shadow-2xl shadow-accent-teal/20">
+            <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-6">
+                Let’s build production systems that scale without chaos.
+            </h2>
+            <p class="text-xl text-muted-gray mb-10 max-w-3xl mx-auto">
+                Ready to transform your infrastructure into a high-performance, automated, and secure platform? Let's connect.
+            </p>
+
+            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                <a href="javascript:void(0)" class="open-contact-modal inline-flex items-center justify-center bg-accent-teal hover:bg-teal-400 text-enterprise-dark font-semibold py-3 px-8 rounded-lg shadow-lg shadow-accent-teal/50 transition duration-300">
+                    <i data-lucide="mail" class="w-5 h-5 mr-2"></i> Contact Me
+                </a>
+                <a href="Resume.pdf" download class="inline-flex items-center justify-center border-2 border-muted-gray text-muted-gray hover:bg-muted-gray hover:text-enterprise-dark font-semibold py-3 px-8 rounded-lg transition duration-300">
+                    <i data-lucide="download" class="w-5 h-5 mr-2"></i> Download Resume
+                </a>
+                <a href="https://github.com/Rajatkpp" target="_blank" rel="noopener" class="inline-flex items-center justify-center border-2 border-muted-gray text-muted-gray hover:bg-muted-gray hover:text-enterprise-dark font-semibold py-3 px-8 rounded-lg transition duration-300">
+                    <i data-lucide="github" class="w-5 h-5 mr-2"></i> View GitHub
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-8 border-t border-white/10 mt-12">
+        <div class="container mx-auto px-4 text-center text-sm text-muted-gray">
+            <p>&copy; 2025 Rajat Tiwari. Enterprise Cloud DevOps Portfolio.</p>
+        </div>
+    </footer>
+
+    <!-- Contact Modal (hidden by default) -->
+    <div id="contact-modal-backdrop" class="modal-backdrop" aria-hidden="true">
+        <div id="contact-modal" class="contact-modal modal-enter" role="dialog" aria-modal="true" aria-labelledby="contact-modal-title">
+            <button class="close-btn" aria-label="Close contact dialog" id="contact-modal-close">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <h3 id="contact-modal-title" class="text-xl font-bold text-white mb-4">Contact</h3>
+
+            <div class="grid gap-3">
+                <div class="contact-level" tabindex="0">
+                    <div class="contact-icon">
+                        <i data-lucide="mail" class="w-6 h-6 text-accent-teal"></i>
+                    </div>
+                    <div class="contact-content">
+                        <a href="mailto:RajatTiwari.codes@gmail.com?subject=Portfolio%20Contact" class="contact-label text-white">Email Me</a>
+                    </div>
+                </div>
+
+                <div class="contact-level" tabindex="0">
+                    <div class="contact-icon">
+                        <i data-lucide="linkedin" class="w-6 h-6 text-blue-400"></i>
+                    </div>
+                    <div class="contact-content">
+                        <a href="https://www.linkedin.com/in/rajat-tiwari-28b6aa16b/" target="_blank" rel="noopener" class="contact-label text-white">View LinkedIn Profile</a>
+                    </div>
+                </div>
+
+                <div class="contact-level" tabindex="0">
+                    <div class="contact-icon">
+                        <!-- Inline WhatsApp SVG icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="w-6 h-6 text-green-400">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12.08c0-4.97-4.03-9-9-9S3 7.11 3 12.08c0 1.92.6 3.69 1.63 5.16L3 21l3.03-1.02A8.94 8.94 0 0012 21c4.97 0 9-4.03 9-8.92z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.5 14.5c-.3-.15-1.78-.88-2.05-.98-.27-.1-.47-.15-.67.15-.2.3-.78.98-.96 1.18-.18.2-.36.22-.66.07-.3-.15-1.26-.47-2.4-1.48-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.6.13-.13.3-.36.45-.54.15-.18.2-.3.3-.5.1-.2.05-.38-.02-.53-.07-.15-.67-1.62-.92-2.22-.24-.59-.49-.5-.67-.51l-.57-.01c-.2 0-.52.07-.79.38-.27.3-1.03 1.01-1.03 2.46 0 1.45 1.06 2.85 1.21 3.05.15.2 2.09 3.2 5.06 4.49 2.97 1.3 2.97.87 3.5.82.53-.05 1.72-.7 1.97-1.38.25-.69.25-1.28.18-1.4-.07-.12-.27-.2-.57-.35z" />
+                        </svg>
+                    </div>
+                    <div class="contact-content">
+                        <a href="https://wa.me/917827396170" target="_blank" rel="noopener" class="contact-label text-white">Whatsapp Me</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Icon Replacement, Metric Animation and Certificates Gallery -->
+    <script>
+        // Replace Lucide icons (must be run after DOM content is loaded)
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            initMetricAnimation();
+            initCertificatesGallery();
+        });
+
+        // Function to handle the counting animation
+        function animateValue(obj, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                
+                // Special handling for the Uptime metric (99.98%)
+                if (end === 99.98) {
+                    obj.innerHTML = (start + progress * (end - start)).toFixed(2);
+                } else {
+                    // For integers, ensure it's rounded and includes the '+'
+                    const current = Math.floor(start + progress * (end - start));
+                    obj.innerHTML = current.toLocaleString('en-US') + (current === end && end > 100 ? '+' : '');
+                }
+
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // Initialize the Intersection Observer for metrics
+        function initMetricAnimation() {
+            const metricsPanel = document.querySelector('.metrics-panel');
+            if (!metricsPanel) return;
+
+            // Animate immediately for faster perceived load
+            const valueDisplays = metricsPanel.querySelectorAll('[data-target]');
+            valueDisplays.forEach(display => {
+                if (display.getAttribute('data-animated')) return;
+                const target = parseFloat(display.getAttribute('data-target'));
+                animateValue(display, 0, target, 1500); // faster 1.5s animation
+                display.setAttribute('data-animated', 'true');
+            });
+
+            // Also keep an observer to trigger if metrics are added later
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const valueDisplays = entry.target.querySelectorAll('[data-target]');
+                        valueDisplays.forEach(display => {
+                            if (display.getAttribute('data-animated')) return;
+                            const target = parseFloat(display.getAttribute('data-target'));
+                            animateValue(display, 0, target, 1500);
+                            display.setAttribute('data-animated', 'true');
+                        });
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { root: null, threshold: 0.2 });
+
+            observer.observe(metricsPanel);
+        }
+
+        /* Certificates gallery: fetches certificates/index.json and renders a responsive gallery.
+           Works with image files and PDFs. Lightbox modal opens images/PDFs in new tab or preview. */
+        async function initCertificatesGallery() {
+            const container = document.getElementById('certificates-gallery-grid');
+            if (!container) return;
+
+            try {
+                const res = await fetch('certificates/index.json', {cache: 'no-store'});
+                if (!res.ok) throw new Error('No index.json');
+                const items = await res.json();
+
+                // Build track
+                container.innerHTML = '';
+                const track = document.createElement('div');
+                track.className = 'cert-track';
+
+                items.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'cert-card cursor-pointer';
+
+                    const thumbWrap = document.createElement('div');
+                    thumbWrap.className = 'w-full h-full flex items-center justify-center overflow-hidden rounded';
+
+                    if (item.type === 'image') {
+                        const img = document.createElement('img');
+                        img.src = item.url;
+                        img.alt = '';
+                        img.className = 'object-contain w-full h-full';
+                        thumbWrap.appendChild(img);
+                    } else if (item.type === 'pdf') {
+                        thumbWrap.innerHTML = `<div class="text-sm text-muted-gray">PDF</div>`;
+                    } else {
+                        thumbWrap.innerHTML = `<div class="text-sm text-muted-gray">File</div>`;
+                    }
+
+                    card.appendChild(thumbWrap);
+                    card.addEventListener('click', () => openCertificate(item));
+                    track.appendChild(card);
+                });
+
+                // Duplicate for seamless loop
+                const cloneCount = 1; // duplicate once
+                for (let i = 0; i < cloneCount; i++) {
+                    Array.from(track.children).forEach(child => track.appendChild(child.cloneNode(true)));
+                }
+
+                container.appendChild(track);
+
+                // Auto-scroll using requestAnimationFrame for smooth parity
+                let paused = false;
+                let pos = 0;
+                const speed = 60; // px per second
+
+                // Pause on hover
+                container.addEventListener('mouseenter', () => paused = true);
+                container.addEventListener('mouseleave', () => paused = false);
+
+                // Measure half width (original set)
+                const measureAndStart = () => {
+                    const totalWidth = track.scrollWidth / (cloneCount + 1);
+                    let last = null;
+
+                    function step(ts) {
+                        if (!last) last = ts;
+                        const dt = (ts - last) / 1000;
+                        last = ts;
+                        if (!paused) {
+                            pos -= speed * dt;
+                            if (Math.abs(pos) >= totalWidth) pos += totalWidth;
+                            track.style.transform = `translateX(${pos}px)`;
+                        }
+                        requestAnimationFrame(step);
+                    }
+
+                    requestAnimationFrame(step);
+                };
+
+                // Wait a frame to ensure measurements are correct
+                requestAnimationFrame(measureAndStart);
+
+            } catch (err) {
+                container.innerHTML = '<p class="text-sm text-muted-gray">No certificates found. Run the generator to create certificates/index.json.</p>';
+            }
+        }
+
+        function openCertificate(item) {
+            // For images open in a modal; for pdf open in new tab
+            if (item.type === 'image') {
+                const overlay = document.createElement('div');
+                overlay.className = 'fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4';
+
+                const img = document.createElement('img');
+                img.src = item.url;
+                img.alt = item.name;
+                img.className = 'max-h-[90vh] max-w-[90vw] rounded shadow-2xl';
+
+                overlay.appendChild(img);
+
+                overlay.addEventListener('click', () => document.body.removeChild(overlay));
+                document.body.appendChild(overlay);
+            } else {
+                window.open(item.url, '_blank');
+            }
+        }
+
+        // Contact modal: open/close + focus trap + accessibility
+        (function(){
+            const backdrop = document.getElementById('contact-modal-backdrop');
+            const modal = document.getElementById('contact-modal');
+            const closeBtn = document.getElementById('contact-modal-close');
+            let lastFocused = null;
+
+            function getFocusable(el = modal) {
+                return Array.from(el.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'))
+                    .filter(e => !e.hasAttribute('disabled'));
+            }
+
+            function openContactModal() {
+                if (!backdrop || !modal) return;
+                lastFocused = document.activeElement;
+                backdrop.classList.add('open');
+                modal.classList.add('open');
+                backdrop.setAttribute('aria-hidden','false');
+                modal.setAttribute('tabindex','-1');
+                // small delay to allow CSS transition
+                setTimeout(() => {
+                    modal.focus();
+                }, 50);
+                document.body.style.overflow = 'hidden';
+                lucide.createIcons();
+                trapFocus();
+            }
+
+            function closeContactModal() {
+                if (!backdrop || !modal) return;
+                backdrop.classList.remove('open');
+                modal.classList.remove('open');
+                backdrop.setAttribute('aria-hidden','true');
+                document.body.style.overflow = '';
+                releaseFocus();
+                if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
+            }
+
+            function onKeyDown(e) {
+                if (e.key === 'Escape') {
+                    closeContactModal();
+                }
+            }
+
+            function trapFocus() {
+                const focusable = getFocusable();
+                if (!focusable.length) return;
+                const first = focusable[0];
+                const last = focusable[focusable.length -1];
+
+                function onTab(e) {
+                    if (e.key !== 'Tab') return;
+                    if (e.shiftKey) {
+                        if (document.activeElement === first) {
+                            e.preventDefault(); last.focus();
+                        }
+                    } else {
+                        if (document.activeElement === last) {
+                            e.preventDefault(); first.focus();
+                        }
+                    }
+                }
+
+                modal.__onKey = onTab;
+                document.addEventListener('keydown', onTab);
+                document.addEventListener('keydown', onKeyDown);
+                // backdrop click
+                modal.__onBackdrop = (ev) => { if (ev.target === backdrop) closeContactModal(); };
+                backdrop.addEventListener('click', modal.__onBackdrop);
+                if (closeBtn) closeBtn.addEventListener('click', closeContactModal);
+            }
+
+            function releaseFocus() {
+                if (modal && modal.__onKey) document.removeEventListener('keydown', modal.__onKey);
+                document.removeEventListener('keydown', onKeyDown);
+                if (modal && modal.__onBackdrop) backdrop.removeEventListener('click', modal.__onBackdrop);
+                if (closeBtn) closeBtn.removeEventListener('click', closeContactModal);
+            }
+
+            // Wire openers
+            document.addEventListener('DOMContentLoaded', () => {
+                document.querySelectorAll('.open-contact-modal').forEach(btn => {
+                    btn.addEventListener('click', (e) => { e.preventDefault(); openContactModal(); });
+                });
+            });
+
+            // Expose for debugging
+            window.openContactModal = openContactModal;
+            window.closeContactModal = closeContactModal;
+        })();
+    </script>
+
+</body>
+</html>
